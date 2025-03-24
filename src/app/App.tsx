@@ -81,16 +81,18 @@ const App = () => {
     };
 
     return (
-        <div className={s.app}>
+        <main className={s.app}>
             {error && <p>{error}</p>}
-            <AppHeader />
+            <header>
+                <AppHeader />
+            </header>
             <DragDropContext onDragEnd={handleDrop}>
-                <div className={s.burgerContainer}>
+                <section className={s.burgerContainer}>
                     <BurgerIngredients ingredients={ingredients} setIngredients={setIngredients} />
                     <BurgerConstructor ingredients={constructorIngredients} />
-                </div>
+                </section>
             </DragDropContext>
-        </div>
+        </main>
     );
 };
 

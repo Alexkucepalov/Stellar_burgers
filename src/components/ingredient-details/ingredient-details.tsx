@@ -1,6 +1,5 @@
 import React from 'react';
 import s from './ingredient-details.module.scss';
-import PropTypes from 'prop-types';
 
 interface IngredientDetailsProps {
     ingredient: {
@@ -40,14 +39,3 @@ export const IngredientDetails: React.FC<IngredientDetailsProps> = ({ ingredient
         </div>
     );
 };
-
-IngredientDetails.propTypes = {
-    ingredient: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
-        calories: PropTypes.number.isRequired,
-        proteins: PropTypes.number.isRequired,
-        fat: PropTypes.number.isRequired,
-        carbohydrates: PropTypes.number.isRequired
-    }).isRequired
-}; 
