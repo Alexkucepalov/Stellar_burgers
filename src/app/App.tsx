@@ -80,20 +80,21 @@ const App = () => {
         }
     };
 
-    return (
-        <main className={s.app}>
-            {error && <p>{error}</p>}
-            <header>
-                <AppHeader />
-            </header>
-            <DragDropContext onDragEnd={handleDrop}>
-                <section className={s.burgerContainer}>
-                    <BurgerIngredients ingredients={ingredients} setIngredients={setIngredients} />
-                    <BurgerConstructor ingredients={constructorIngredients} />
-                </section>
-            </DragDropContext>
-        </main>
-    );
+	return (
+		<div className={s.app}>
+			{error && <p>{error}</p>}
+			<AppHeader />
+			<DragDropContext onDragEnd={handleDrop}>
+				<main className={s.burgerContainer}>
+					<BurgerIngredients
+						ingredients={ingredients}
+						setIngredients={setIngredients}
+					/>
+					<BurgerConstructor ingredients={constructorIngredients} />
+				</main>
+			</DragDropContext>
+		</div>
+	);
 };
 
 export default App; 
