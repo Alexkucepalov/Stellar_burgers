@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import s from './burger-ingredients.module.scss';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import {
+	CurrencyIcon,
+	Counter,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { Ingredient } from '@utils/types';
+import { useAppSelector } from '@services/hooks';
 
-interface BurgerIngredientsProps {
-	ingredients: Ingredient[];
-}
+export const BurgerIngredients: React.FC = () => {
+	const ingredients = useAppSelector((state) => state.ingredients.items);
+	const { items, bun } = useAppSelector((state) => state.constructor);
 
-export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
-	ingredients,
-}) => {
 	const [current, setCurrent] = React.useState('one');
 	const [selectedIngredient, setSelectedIngredient] =
 		useState<Ingredient | null>(null);
@@ -65,6 +66,18 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
 
 	const handleCloseModal = () => {
 		setSelectedIngredient(null);
+	};
+
+	// Подсчет количества ингредиентов
+	const getIngredientCount = (id: string): number | null => {
+		if (bun && bun._id === id) {
+			return 2; // Верхняя и нижняя булка
+		}
+		if (!items || items.length === 0) {
+			return null; // Если items пустой, возвращаем null
+		}
+		const ingredient = items.find((item) => item._id === id);
+		return ingredient?.count || null; // Если count отсутствует, возвращаем null
 	};
 
 	return (
@@ -131,6 +144,12 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
 													</p>
 													<p className={s.name}>{ingredient.name}</p>
 												</div>
+												{getIngredientCount(ingredient._id) !== null && (
+													<Counter
+														count={getIngredientCount(ingredient._id) as number}
+														size='default'
+													/>
+												)}
 											</div>
 										)}
 									</Draggable>
@@ -164,6 +183,12 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
 													</p>
 													<p className={s.name}>{ingredient.name}</p>
 												</div>
+												{getIngredientCount(ingredient._id) !== null && (
+													<Counter
+														count={getIngredientCount(ingredient._id) as number}
+														size='default'
+													/>
+												)}
 											</div>
 										)}
 									</Draggable>
@@ -197,6 +222,12 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
 													</p>
 													<p className={s.name}>{ingredient.name}</p>
 												</div>
+												{getIngredientCount(ingredient._id) !== null && (
+													<Counter
+														count={getIngredientCount(ingredient._id) as number}
+														size='default'
+													/>
+												)}
 											</div>
 										)}
 									</Draggable>

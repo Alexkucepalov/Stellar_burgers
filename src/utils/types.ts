@@ -9,4 +9,5 @@ export interface Ingredient {
 	fat: number;
 	carbohydrates: number;
 	uniqueId?: string;
+	count?: number;
 }

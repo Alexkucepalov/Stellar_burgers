@@ -48,8 +48,14 @@ const App = () => {
 			const draggedIngredient = ingredients.find(
 				(item) => item._id === result.draggableId
 			);
+			console.log('Dragged ingredient:', draggedIngredient);
 			if (draggedIngredient) {
 				dispatch(addIngredient(draggedIngredient));
+			} else {
+				console.error(
+					'Ingredient not found for draggableId:',
+					result.draggableId
+				);
 			}
 		}
 	};
@@ -63,7 +69,7 @@ const App = () => {
 
 			<DragDropContext onDragEnd={handleDrop}>
 				<section className={s.burgerContainer}>
-					<BurgerIngredients ingredients={ingredients} />
+					<BurgerIngredients />
 					<BurgerConstructor />
 				</section>
 			</DragDropContext>

@@ -17,14 +17,18 @@ import {
 } from '@services/reducers/constructorReducer';
 
 export const BurgerConstructor: React.FC = () => {
+	const { items = [], bun } = useAppSelector((state) => state.constructor);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const dispatch = useAppDispatch();
-	const { items = [], bun } = useAppSelector((state) => state.constructor);
 	const { orderNumber, loading, error } = useAppSelector(
 		(state) => state.order
 	);
 
-	// подсчет общей стоимости
+	useEffect(() => {
+		console.log('Constructor state:', { items, bun });
+	}, [items, bun]);
+
+	// Подсчёт общей стоимости
 	const totalPrice = React.useMemo(() => {
 		const itemsPrice = items.reduce((sum, item) => sum + item.price, 0);
 		const bunPrice = bun ? bun.price * 2 : 0; // учитываем обе булки
@@ -61,7 +65,7 @@ export const BurgerConstructor: React.FC = () => {
 
 	return (
 		<div className={s.container}>
-			{/* Верхняя булка*/}
+			{/* Верхняя булка */}
 			<div className={`${s.bunContainer} pb-4`}>
 				{bun ? (
 					<ConstructorElement
@@ -99,8 +103,10 @@ export const BurgerConstructor: React.FC = () => {
 												ref={provided.innerRef}
 												{...provided.draggableProps}
 												{...provided.dragHandleProps}
-												className={s.ingredient}>
-												<DragIcon type='primary' />
+												className={`${s.ingredient} pt-2 pb-2`}>
+												<div className={s.dragIconContainer}>
+													<DragIcon type='primary' />
+												</div>
 												<ConstructorElement
 													text={item.name}
 													price={item.price}

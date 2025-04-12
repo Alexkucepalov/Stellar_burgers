@@ -1,30 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Ingredient } from '@utils/types';
+import { request } from '@utils/api';
 
 export const fetchIngredients = createAsyncThunk(
 	'ingredients/fetchIngredients',
 	async (_, { rejectWithValue }) => {
 		try {
-			const response = await fetch(
-				'https://norma.nomoreparties.space/api/ingredients'
-			);
-
-			if (!response.ok) {
-				throw new Error('Failed to fetch ingredients');
-			}
-
-			const data = await response.json();
-
-			if (!data.success) {
-				throw new Error('API response was not successful');
-			}
-
-			return data.data as Ingredient[];
-		} catch (err: unknown) {
+			const data = await request('ingredients');
+			return data.data;
+		} catch (err) {
 			if (err instanceof Error) {
 				return rejectWithValue(err.message);
 			}
-			return rejectWithValue('An unknown error occurred');
+			return rejectWithValue('Произошла неизвестная ошибка');
 		}
 	}
 );
