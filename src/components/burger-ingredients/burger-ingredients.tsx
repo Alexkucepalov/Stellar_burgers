@@ -68,16 +68,16 @@ export const BurgerIngredients: React.FC = () => {
 		setSelectedIngredient(null);
 	};
 
-	// Подсчет количества ингредиентов
+	// подсчет количества ингредиентов
 	const getIngredientCount = (id: string): number | null => {
 		if (bun && bun._id === id) {
-			return 2; // Верхняя и нижняя булка
+			return 2; // верхняя и нижняя булка
 		}
 		if (!items || items.length === 0) {
-			return null; // Если items пустой, возвращаем null
+			return null; // если items пустой, возвращаем null
 		}
-		const ingredient = items.find((item) => item._id === id);
-		return ingredient?.count || null; // Если count отсутствует, возвращаем null
+		// считаем количество ингредиентов с одинаковым _id
+		return items.filter((item) => item._id === id).length || null;
 	};
 
 	return (
