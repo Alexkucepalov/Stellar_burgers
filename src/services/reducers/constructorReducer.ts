@@ -22,6 +22,7 @@ const constructorSlice = createSlice({
 			) => {
 				const ingredient = action.payload;
 
+				// если добавляется булка
 				if (ingredient.type === 'bun') {
 					console.log('Adding bun:', ingredient);
 					return {
@@ -30,23 +31,12 @@ const constructorSlice = createSlice({
 					};
 				}
 
+				// если добавляется соус или начинка
 				console.log('Adding ingredient to items:', ingredient);
-
-				const existingIngredient = state.items?.find(
-					(item) => item._id === ingredient._id
-				);
-
 				return {
 					...state,
-					items: existingIngredient
-						? state.items.map((item) =>
-								item._id === ingredient._id
-									? { ...item, count: (item.count || 0) + 1 }
-									: item
-						  )
-						: state.items
-						? [...state.items, { ...ingredient, count: 1 }]
-						: [{ ...ingredient, count: 1 }],
+					//items: [...state.items, ingredient],
+					items: state.items ? [...state.items, ingredient] : [ingredient],
 				};
 			},
 			prepare: (ingredient: Ingredient) => {
@@ -64,22 +54,9 @@ const constructorSlice = createSlice({
 			state: ConstructorState,
 			action: PayloadAction<string>
 		) => {
-			if (!state.items) return;
-
-			const index = state.items.findIndex(
-				(item) => item.uniqueId === action.payload
+			state.items = state.items.filter(
+				(item) => item.uniqueId !== action.payload
 			);
-
-			if (index !== -1) {
-				const ingredient = state.items[index];
-
-				state.items =
-					ingredient.count && ingredient.count > 1
-						? state.items.map((item, i) =>
-								i === index ? { ...item, count: item.count! - 1 } : item
-						  )
-						: state.items.filter((_, i) => i !== index);
-			}
 		},
 		moveIngredient: (
 			state: ConstructorState,

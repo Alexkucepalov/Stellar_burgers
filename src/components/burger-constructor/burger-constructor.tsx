@@ -93,32 +93,35 @@ export const BurgerConstructor: React.FC = () => {
 							ref={provided.innerRef}
 							{...provided.droppableProps}>
 							{items.length > 0 ? (
-								items.map((item, index) => (
-									<Draggable
-										key={item.uniqueId}
-										draggableId={item.uniqueId}
-										index={index}>
-										{(provided) => (
-											<div
-												ref={provided.innerRef}
-												{...provided.draggableProps}
-												{...provided.dragHandleProps}
-												className={`${s.ingredient} pt-2 pb-2`}>
-												<div className={s.dragIconContainer}>
-													<DragIcon type='primary' />
+								items.map((item, index) => {
+									console.log('Rendering item:', item);
+									return (
+										<Draggable
+											key={item.uniqueId}
+											draggableId={item.uniqueId}
+											index={index}>
+											{(provided) => (
+												<div
+													ref={provided.innerRef}
+													{...provided.draggableProps}
+													{...provided.dragHandleProps}
+													className={`${s.ingredient} pt-2 pb-2`}>
+													<div className={s.dragIconContainer}>
+														<DragIcon type='primary' />
+													</div>
+													<ConstructorElement
+														text={item.name}
+														price={item.price}
+														thumbnail={item.image}
+														handleClose={() =>
+															dispatch(removeIngredient(item.uniqueId))
+														}
+													/>
 												</div>
-												<ConstructorElement
-													text={item.name}
-													price={item.price}
-													thumbnail={item.image}
-													handleClose={() =>
-														dispatch(removeIngredient(item.uniqueId))
-													}
-												/>
-											</div>
-										)}
-									</Draggable>
-								))
+											)}
+										</Draggable>
+									);
+								})
 							) : (
 								<div className={s.placeholder}>
 									<p className='text text_type_main-default text_color_inactive'>
