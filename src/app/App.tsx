@@ -67,6 +67,7 @@ const App = () => {
 				<AppHeader />
 			</header>
 
+<<<<<<< HEAD
 			<DragDropContext onDragEnd={handleDrop}>
 				<section className={s.burgerContainer}>
 					<BurgerIngredients />
@@ -74,6 +75,35 @@ const App = () => {
 				</section>
 			</DragDropContext>
 		</main>
+=======
+            if (ingredient && isValidIngredient) {
+                setConstructorIngredients(items => {
+                    const newItems = [...items];
+                    newItems.splice(destination.index, 0, {
+                        ...ingredient,
+                        uniqueId: `${ingredient._id}-${Date.now()}`
+                    });
+                    return newItems;
+                });
+            }
+        }
+    };
+
+	return (
+		<div className={s.app}>
+			{error && <p>{error}</p>}
+			<AppHeader />
+			<DragDropContext onDragEnd={handleDrop}>
+				<main className={s.burgerContainer}>
+					<BurgerIngredients
+						ingredients={ingredients}
+						setIngredients={setIngredients}
+					/>
+					<BurgerConstructor ingredients={constructorIngredients} />
+				</main>
+			</DragDropContext>
+		</div>
+>>>>>>> 62ba743d8c651a9bafbb80da46d53b8675794dde
 	);
 };
 
