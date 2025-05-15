@@ -10,14 +10,13 @@ import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { Ingredient } from '@utils/types';
 import { useAppSelector } from '@services/hooks';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const BurgerIngredients: React.FC = () => {
 	const ingredients = useAppSelector((state) => state.ingredients.items);
 	const { items, bun } = useAppSelector((state) => state.constructor);
 
 	const [current, setCurrent] = React.useState('one');
-	const [selectedIngredient, setSelectedIngredient] =
-		useState<Ingredient | null>(null);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	const bunsRef = useRef<HTMLHeadingElement>(null);
@@ -27,6 +26,9 @@ export const BurgerIngredients: React.FC = () => {
 	const buns = ingredients.filter((item) => item.type === 'bun');
 	const sauces = ingredients.filter((item) => item.type === 'sauce');
 	const mains = ingredients.filter((item) => item.type === 'main');
+
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const handleScroll = () => {
 		const bunsTop = bunsRef.current?.getBoundingClientRect().top || 0;
@@ -61,11 +63,7 @@ export const BurgerIngredients: React.FC = () => {
 	}, []);
 
 	const handleIngredientClick = (ingredient: Ingredient) => {
-		setSelectedIngredient(ingredient);
-	};
-
-	const handleCloseModal = () => {
-		setSelectedIngredient(null);
+		navigate(`/ingredients/${ingredient._id}`, { state: { background: location } });
 	};
 
 	// подсчет количества ингредиентов
@@ -238,12 +236,6 @@ export const BurgerIngredients: React.FC = () => {
 					)}
 				</Droppable>
 			</div>
-
-			{selectedIngredient && (
-				<Modal onClose={handleCloseModal}>
-					<IngredientDetails ingredient={selectedIngredient} />
-				</Modal>
-			)}
 		</div>
 	);
 };

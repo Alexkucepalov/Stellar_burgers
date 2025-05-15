@@ -1,109 +1,85 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { AppHeader } from '@components/app-header/app-header';
-import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
-import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
-import { API_URL } from '@utils/constants';
-import s from './app.module.scss';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { useAppDispatch, useAppSelector } from '@services/hooks';
-import { fetchIngredients } from '@services/actions/ingredientsActions';
-import {
-	addIngredient,
-	moveIngredient,
-} from '@services/reducers/constructorReducer';
+import Home from '@pages/Home';
+import Login from '@pages/Login';
+import Register from '@pages/Register';
+import ForgotPassword from '@pages/forgot-password';
+import ResetPassword from '@pages/reset-password';
+import Profile from '@pages/profile';
+import ProtectedRouteElement from '@components/protected-route/protected-route';
+import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
+import IngredientPage from '@pages/ingredient-page';
+import { Modal } from '@components/modal/modal';
+import { useLocation } from 'react-router-dom';
 
 const App = () => {
-	const dispatch = useAppDispatch();
-	const { items: ingredients, error } = useAppSelector(
-		(state) => state.ingredients
-	);
-
-	useEffect(() => {
-		dispatch(fetchIngredients());
-	}, [dispatch]);
-
-	const handleDrop = (result: DropResult) => {
-		const { source, destination } = result;
-
-		if (!destination) {
-			return;
-		}
-
-		const isSameContainer = source.droppableId === destination.droppableId;
-		const isMovingToConstructor =
-			source.droppableId === 'ingredients' &&
-			destination.droppableId === 'constructor';
-
-		if (isSameContainer && source.droppableId === 'constructor') {
-			dispatch(
-				moveIngredient({
-					from: source.index,
-					to: destination.index,
-				})
-			);
-			return;
-		}
-
-		if (isMovingToConstructor) {
-			const draggedIngredient = ingredients.find(
-				(item) => item._id === result.draggableId
-			);
-			console.log('Dragged ingredient:', draggedIngredient);
-			if (draggedIngredient) {
-				dispatch(addIngredient(draggedIngredient));
-			} else {
-				console.error(
-					'Ingredient not found for draggableId:',
-					result.draggableId
-				);
-			}
-		}
-	};
+	const location = useLocation();
+	const background = location.state && location.state.background;
+	const navigate = useNavigate();
 
 	return (
-		<main className={s.app}>
-			{error && <p>{error}</p>}
-			<header>
-				<AppHeader />
-			</header>
+		<>
+			<Routes location={background || location}>
+				<Route path='/' element={<Home />} />
+				<Route
+					path='/login'
+					element={
+						<ProtectedRouteElement onlyForUnauth>
+							<Login />
+						</ProtectedRouteElement>
+					}
+				/>
+				<Route
+					path='/register'
+					element={
+						<ProtectedRouteElement onlyForUnauth>
+							<Register />
+						</ProtectedRouteElement>
+					}
+				/>
+				<Route
+					path='/forgot-password'
+					element={
+						<ProtectedRouteElement onlyForUnauth>
+							<ForgotPassword />
+						</ProtectedRouteElement>
+					}
+				/>
+				<Route
+					path='/reset-password'
+					element={
+						<ProtectedRouteElement onlyForUnauth>
+							<ResetPassword />
+						</ProtectedRouteElement>
+					}
+				/>
 
-<<<<<<< HEAD
-			<DragDropContext onDragEnd={handleDrop}>
-				<section className={s.burgerContainer}>
-					<BurgerIngredients />
-					<BurgerConstructor />
-				</section>
-			</DragDropContext>
-		</main>
-=======
-            if (ingredient && isValidIngredient) {
-                setConstructorIngredients(items => {
-                    const newItems = [...items];
-                    newItems.splice(destination.index, 0, {
-                        ...ingredient,
-                        uniqueId: `${ingredient._id}-${Date.now()}`
-                    });
-                    return newItems;
-                });
-            }
-        }
-    };
+				<Route
+					path='/profile/*'
+					element={
+						<ProtectedRouteElement onlyForAuth>
+							<Profile />
+						</ProtectedRouteElement>
+					}
+				/>
 
-	return (
-		<div className={s.app}>
-			{error && <p>{error}</p>}
-			<AppHeader />
-			<DragDropContext onDragEnd={handleDrop}>
-				<main className={s.burgerContainer}>
-					<BurgerIngredients
-						ingredients={ingredients}
-						setIngredients={setIngredients}
+				<Route path='/ingredients/:id' element={<IngredientPage />} />
+			</Routes>
+
+			{background && (
+				<Routes>
+					<Route
+						path='/ingredients/:id'
+						element={
+							<Modal onClose={() => navigate(-1)}>
+								<IngredientDetails />
+							</Modal>
+						}
 					/>
-					<BurgerConstructor ingredients={constructorIngredients} />
-				</main>
-			</DragDropContext>
-		</div>
->>>>>>> 62ba743d8c651a9bafbb80da46d53b8675794dde
+				</Routes>
+			)}
+		</>
 	);
 };
 

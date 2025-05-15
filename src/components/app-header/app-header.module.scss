@@ -1,63 +1,63 @@
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #1C1C1C;
-    padding: 16px;
-    position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #1c1c1c;
+	padding: 16px;
+	position: relative;
 }
 
 .nav {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin: 0 320px;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	margin: 0 320px;
 }
 
 .left {
-    display: flex;
+	display: flex;
 }
 
 .buttonContainer {
-    display: flex;
+	display: flex;
 }
 
 .logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 .right {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
+	display: flex;
+	align-items: center;
+	margin-left: auto;
 }
 
 .button {
-    display: flex;
-    align-items: center;
-    color: #8585AD;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0%;
-    padding: 16px 20px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 40px;
+	display: flex;
+	align-items: center;
+	color: #8585ad;
+	font-family: 'JetBrains Mono', monospace;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 24px;
+	letter-spacing: 0%;
+	padding: 16px 20px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	border-radius: 40px;
 }
 
 .button:hover {
-    color: #B0B0B0;
+	color: #b0b0b0;
 }
 
 .active {
-    color: #F2F2F3;
+	color: #f2f2f3;
 }
 
 .active + svg {
-    fill: #F2F2F3;
+	fill: #f2f2f3;
 }
