@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { AppHeader } from '@components/app-header/app-header';
 import Home from '@pages/Home';
@@ -12,74 +12,88 @@ import { IngredientDetails } from '@components/ingredient-details/ingredient-det
 import IngredientPage from '@pages/ingredient-page';
 import { Modal } from '@components/modal/modal';
 import { useLocation } from 'react-router-dom';
+import styles from './app.module.scss';
+import { Autologin } from '@components/autologin/autologin';
+import { useAppDispatch } from '@services/hooks';
+import { fetchIngredients } from '@services/actions/ingredientsActions';
 
 const App = () => {
 	const location = useLocation();
 	const background = location.state && location.state.background;
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		dispatch(fetchIngredients());
+	}, [dispatch]);
 
 	return (
-		<>
-			<Routes location={background || location}>
-				<Route path='/' element={<Home />} />
-				<Route
-					path='/login'
-					element={
-						<ProtectedRouteElement onlyForUnauth>
-							<Login />
-						</ProtectedRouteElement>
-					}
-				/>
-				<Route
-					path='/register'
-					element={
-						<ProtectedRouteElement onlyForUnauth>
-							<Register />
-						</ProtectedRouteElement>
-					}
-				/>
-				<Route
-					path='/forgot-password'
-					element={
-						<ProtectedRouteElement onlyForUnauth>
-							<ForgotPassword />
-						</ProtectedRouteElement>
-					}
-				/>
-				<Route
-					path='/reset-password'
-					element={
-						<ProtectedRouteElement onlyForUnauth>
-							<ResetPassword />
-						</ProtectedRouteElement>
-					}
-				/>
-
-				<Route
-					path='/profile/*'
-					element={
-						<ProtectedRouteElement onlyForAuth>
-							<Profile />
-						</ProtectedRouteElement>
-					}
-				/>
-
-				<Route path='/ingredients/:id' element={<IngredientPage />} />
-			</Routes>
-
-			{background && (
-				<Routes>
+		<Autologin>
+			<div className={styles.app}>
+				<header>
+					<AppHeader />
+				</header>
+				<Routes location={background || location}>
+					<Route path='/' element={<Home />} />
 					<Route
-						path='/ingredients/:id'
+						path='/login'
 						element={
-							<Modal onClose={() => navigate(-1)}>
-								<IngredientDetails />
-							</Modal>
+							<ProtectedRouteElement onlyForUnauth>
+								<Login />
+							</ProtectedRouteElement>
 						}
 					/>
+					<Route
+						path='/register'
+						element={
+							<ProtectedRouteElement onlyForUnauth>
+								<Register />
+							</ProtectedRouteElement>
+						}
+					/>
+					<Route
+						path='/forgot-password'
+						element={
+							<ProtectedRouteElement onlyForUnauth>
+								<ForgotPassword />
+							</ProtectedRouteElement>
+						}
+					/>
+					<Route
+						path='/reset-password'
+						element={
+							<ProtectedRouteElement onlyForUnauth>
+								<ResetPassword />
+							</ProtectedRouteElement>
+						}
+					/>
+
+					<Route
+						path='/profile/*'
+						element={
+							<ProtectedRouteElement onlyForAuth>
+								<Profile />
+							</ProtectedRouteElement>
+						}
+					/>
+
+					<Route path='/ingredients/:id' element={<IngredientPage />} />
 				</Routes>
-			)}
-		</>
+
+				{background && (
+					<Routes>
+						<Route
+							path='/ingredients/:id'
+							element={
+								<Modal onClose={() => navigate(-1)}>
+									<IngredientDetails />
+								</Modal>
+							}
+						/>
+					</Routes>
+				)}
+			</div>
+		</Autologin>
 	);
 };
 

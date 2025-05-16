@@ -1,4 +1,3 @@
-import { AppHeader } from '@components/app-header/app-header';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -12,10 +11,11 @@ const ForgotPassword = () => {
 	const [email, setEmail] = useState('');
 	const navigate = useNavigate();
 
-	const handleForgotPassword = async () => {
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 		try {
 			await resetPassword(email);
-			localStorage.setItem('resetPasswordAllowed', 'true'); // Устанавливаем флаг
+			localStorage.setItem('resetPasswordAllowed', 'true');
 			navigate('/reset-password');
 		} catch (error) {
 			console.error('Ошибка при восстановлении пароля:', error);
@@ -24,14 +24,11 @@ const ForgotPassword = () => {
 
 	return (
 		<div>
-			<header>
-				<AppHeader />
-			</header>
 			<div className={styles.loginContainer + ' pt-6'}>
 				<h1 className='text text_type_main-large pb-6'>
 					Восстановление пароля
 				</h1>
-				<div className={styles.inputContainer + ' pb-6'}>
+				<form onSubmit={handleSubmit} className={styles.inputContainer + ' pb-6'}>
 					<EmailInput
 						onChange={(e) => setEmail(e.target.value)}
 						value={email}
@@ -39,16 +36,15 @@ const ForgotPassword = () => {
 						isIcon={false}
 						placeholder={'Укажите email'}
 					/>
-				</div>
-				<div className='pb-20'>
-					<Button
-						htmlType='button'
-						type='primary'
-						size='medium'
-						onClick={handleForgotPassword}>
-						Восстановить
-					</Button>
-				</div>
+					<div className={styles.buttonContainer + ' pb-20'}>
+						<Button
+							htmlType='submit'
+							type='primary'
+							size='medium'>
+							Восстановить
+						</Button>
+					</div>
+				</form>
 				<div className={styles.links}>
 					<p className='text text_type_main-default text_color_inactive pb-4'>
 						Вcпомнили пароль?{' '}

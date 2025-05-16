@@ -1,4 +1,3 @@
-import { AppHeader } from '@components/app-header/app-header';
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -16,17 +15,17 @@ const ResetPassword = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		// Проверяем, был ли пользователь на странице forgot-password
 		if (!localStorage.getItem('resetPasswordAllowed')) {
 			navigate('/forgot-password');
 		}
 	}, [navigate]);
 
-	const handleResetPassword = async () => {
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 		try {
 			await setNewPassword(password, token);
-			localStorage.removeItem('resetPasswordAllowed'); // Удаляем флаг
-			navigate('/login'); // Перенаправление на страницу входа
+			localStorage.removeItem('resetPasswordAllowed');
+			navigate('/login');
 		} catch (error) {
 			console.error('Ошибка при сбросе пароля:', error);
 		}
@@ -34,14 +33,11 @@ const ResetPassword = () => {
 
 	return (
 		<div>
-			<header>
-				<AppHeader />
-			</header>
 			<div className={styles.loginContainer + ' pt-6'}>
 				<h1 className='text text_type_main-large pb-6'>
 					Восстановление пароля
 				</h1>
-				<div className={styles.inputContainer + ' pb-6'}>
+				<form onSubmit={handleSubmit} className={styles.inputContainer + ' pb-6'}>
 					<PasswordInput
 						placeholder={'Введите новый пароль'}
 						onChange={(e) => setPassword(e.target.value)}
@@ -58,16 +54,15 @@ const ResetPassword = () => {
 						errorText={'Ошибка'}
 						size={'default'}
 					/>
-				</div>
-				<div className='pb-20'>
-					<Button
-						htmlType='button'
-						type='primary'
-						size='medium'
-						onClick={handleResetPassword}>
-						Сохранить
-					</Button>
-				</div>
+					<div className='pb-20'>
+						<Button
+							htmlType='submit'
+							type='primary'
+							size='medium'>
+							Сохранить
+						</Button>
+					</div>
+				</form>
 				<div className={styles.links}>
 					<p className='text text_type_main-default text_color_inactive pb-4'>
 						Вспомнили пароль?{' '}

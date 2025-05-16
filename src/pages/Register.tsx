@@ -1,4 +1,3 @@
-import { AppHeader } from '@components/app-header/app-header';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -18,7 +17,8 @@ const Register = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	const handleRegister = () => {
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
 		dispatch(registerUser({ email, password, name })).then((action) => {
 			if (action.meta.requestStatus === 'fulfilled') {
 				navigate('/login');
@@ -28,12 +28,9 @@ const Register = () => {
 
 	return (
 		<div>
-			<header>
-				<AppHeader />
-			</header>
 			<div className={styles.loginContainer + ' pt-6'}>
 				<h1 className='text text_type_main-large pb-6'>Регистрация</h1>
-				<div className={styles.inputContainer + ' pb-6'}>
+				<form onSubmit={handleSubmit} className={styles.inputContainer + ' pb-6'}>
 					<Input
 						type={'text'}
 						placeholder={'Имя'}
@@ -55,16 +52,15 @@ const Register = () => {
 						value={password}
 						name={'password'}
 					/>
-				</div>
-				<div className='pb-20'>
-					<Button
-						htmlType='button'
-						type='primary'
-						size='medium'
-						onClick={handleRegister}>
-						Зарегистрироваться
-					</Button>
-				</div>
+					<div className={styles.buttonContainer + ' pb-20'}>
+						<Button
+							htmlType='submit'
+							type='primary'
+							size='medium'>
+							Зарегистрироваться
+						</Button>
+					</div>
+				</form>
 				<div className={styles.links}>
 					<p className='text text_type_main-default text_color_inactive pb-4'>
 						Уже зарегестрированы?{' '}

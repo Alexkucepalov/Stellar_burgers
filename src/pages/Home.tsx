@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { AppHeader } from '@components/app-header/app-header';
+import React, { useState } from 'react';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { API_URL } from '@utils/constants';
 import s from './home.module.scss';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
-import { fetchIngredients } from '@services/actions/ingredientsActions';
 import {
 	addIngredient,
 	moveIngredient,
@@ -17,10 +15,6 @@ const Home = () => {
 	const { items: ingredients, error } = useAppSelector(
 		(state) => state.ingredients
 	);
-
-	useEffect(() => {
-		dispatch(fetchIngredients());
-	}, [dispatch]);
 
 	const handleDrop = (result: DropResult) => {
 		const { source, destination } = result;
@@ -63,9 +57,6 @@ const Home = () => {
 	return (
 		<main className={s.app}>
 			{error && <p>{error}</p>}
-			<header>
-				<AppHeader />
-			</header>
 
 			<DragDropContext onDragEnd={handleDrop}>
 				<section className={s.burgerContainer}>

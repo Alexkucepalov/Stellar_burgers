@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@services/hooks';
 
 interface ProtectedRouteElementProps {
-	children: JSX.Element;
+	children: React.ReactNode;
 	onlyForAuth?: boolean; // Если true, маршрут доступен только для авторизованных пользователей
 	onlyForUnauth?: boolean; // Если true, маршрут доступен только для неавторизованных пользователей
 }
@@ -13,8 +13,13 @@ const ProtectedRouteElement: React.FC<ProtectedRouteElementProps> = ({
 	onlyForAuth = false,
 	onlyForUnauth = false,
 }) => {
-	const { user } = useAppSelector((state) => state.auth);
+	const { user, loading } = useAppSelector((state) => state.auth);
 	const location = useLocation();
+
+	// Если идет загрузка, показываем загрузку
+	if (loading) {
+		return <div>Загрузка...</div>;
+	}
 
 	// Если маршрут доступен только для авторизованных пользователей
 	if (onlyForAuth && !user) {
@@ -26,7 +31,7 @@ const ProtectedRouteElement: React.FC<ProtectedRouteElementProps> = ({
 		return <Navigate to='/profile' />;
 	}
 
-	return children;
+	return <>{children}</>;
 };
 
 export default ProtectedRouteElement;

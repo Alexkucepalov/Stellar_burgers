@@ -7,7 +7,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import s from './app-header.module.scss';
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 export const AppHeader = () => {
 	const [activeButton, setActiveButton] = useState('constructor');
@@ -62,7 +62,9 @@ export const AppHeader = () => {
 					</div>
 				</div>
 				<div className={s.logo}>
-					<Logo />
+					<Link to='/'>
+						<Logo />
+					</Link>
 				</div>
 				<div className={s.right}>
 					<Button

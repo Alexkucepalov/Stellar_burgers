@@ -1,4 +1,3 @@
-import { AppHeader } from '@components/app-header/app-header';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -37,11 +36,15 @@ const Profile = () => {
 	}, [user]);
 
 	// Проверка, изменились ли значения формы относительно исходных данных пользователя
-	const checkFormChanged = (newName: string, newEmail: string, newPassword: string) => {
+	const checkFormChanged = (
+		newName: string,
+		newEmail: string,
+		newPassword: string
+	) => {
 		if (!user) return false;
-		return newName !== user.name || 
-		       newEmail !== user.email || 
-		       newPassword !== '';
+		return (
+			newName !== user.name || newEmail !== user.email || newPassword !== ''
+		);
 	};
 
 	// Обработчик изменения любого поля формы
@@ -59,11 +62,13 @@ const Profile = () => {
 				break;
 		}
 		// Проверяем, изменена ли форма
-		setIsFormChanged(checkFormChanged(
-			name === 'name' ? value : name,
-			name === 'email' ? value : email,
-			name === 'password' ? value : password
-		));
+		setIsFormChanged(
+			checkFormChanged(
+				name === 'name' ? value : name,
+				name === 'email' ? value : email,
+				name === 'password' ? value : password
+			)
+		);
 	};
 
 	// Обработчик отправки формы (сохранение изменений)
@@ -94,25 +99,27 @@ const Profile = () => {
 
 	return (
 		<div>
-			<header>
-				<AppHeader />
-			</header>
-
 			<div className={styles.profileContainer}>
 				<div className={styles.sidebar}>
-					<Link 
-						to='/profile' 
-						className={`text text_type_main-medium ${location.pathname === '/profile' ? styles.active : ''}`}>
+					<Link
+						to='/profile'
+						className={`text text_type_main-medium ${
+							location.pathname === '/profile' ? styles.active : ''
+						}`}>
 						Профиль
 					</Link>
-					<Link 
-						to='/profile/orders' 
-						className={`text text_type_main-medium ${location.pathname === '/profile/orders' ? styles.active : ''}`}>
+					<Link
+						to='/profile/orders'
+						className={`text text_type_main-medium ${
+							location.pathname === '/profile/orders' ? styles.active : ''
+						}`}>
 						История заказов
 					</Link>
-					<Link 
-						to='/logout' 
-						className={`text text_type_main-medium ${location.pathname === '/logout' ? styles.active : ''}`}>
+					<Link
+						to='/logout'
+						className={`text text_type_main-medium ${
+							location.pathname === '/logout' ? styles.active : ''
+						}`}>
 						Выход
 					</Link>
 					<div className={styles.profileContent + ' pt-20'}>
@@ -121,7 +128,9 @@ const Profile = () => {
 						</p>
 					</div>
 				</div>
-				<form onSubmit={handleSubmit} className={styles.inputContainer + ' pb-6'}>
+				<form
+					onSubmit={handleSubmit}
+					className={styles.inputContainer + ' pb-6'}>
 					<Input
 						type={'text'}
 						placeholder={'Имя'}
@@ -151,10 +160,7 @@ const Profile = () => {
 					/>
 					{isFormChanged && (
 						<div className={styles.buttonContainer}>
-							<Button
-								htmlType='submit'
-								type='primary'
-								size='medium'>
+							<Button htmlType='submit' type='primary' size='medium'>
 								Сохранить
 							</Button>
 							<Button

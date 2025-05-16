@@ -1,4 +1,3 @@
-import { AppHeader } from '@components/app-header/app-header';
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -18,7 +17,8 @@ const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	const handleLogin = () => {
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
 		dispatch(loginUser({ email, password })).then((action) => {
 			if (action.meta.requestStatus === 'fulfilled') {
 				const redirectTo = location.state?.from?.pathname || '/';
@@ -29,12 +29,9 @@ const Login = () => {
 
 	return (
 		<div>
-			<header>
-				<AppHeader />
-			</header>
 			<div className={styles.loginContainer + ' pt-6'}>
 				<h1 className='text text_type_main-large pb-6'>Вход</h1>
-				<div className={styles.inputContainer + ' pb-6'}>
+				<form onSubmit={handleSubmit} className={styles.inputContainer + ' pb-6'}>
 					<EmailInput
 						onChange={(e) => setEmail(e.target.value)}
 						value={email}
@@ -47,16 +44,15 @@ const Login = () => {
 						name={'password'}
 						extraClass='mb-6'
 					/>
-				</div>
-				<div className='pb-20'>
-					<Button
-						htmlType='button'
-						type='primary'
-						size='medium'
-						onClick={handleLogin}>
-						Войти
-					</Button>
-				</div>
+					<div className={styles.buttonContainer + ' pb-20'}>
+						<Button
+							htmlType='submit'
+							type='primary'
+							size='medium'>
+							Войти
+						</Button>
+					</div>
+				</form>
 				<div className={styles.links}>
 					<p className='text text_type_main-default text_color_inactive pb-4'>
 						Вы — новый пользователь?{' '}

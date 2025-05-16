@@ -1,24 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import s from './ingredient-details.module.scss';
 import { useParams } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '@services/hooks';
-import { fetchIngredients } from '@services/actions/ingredientsActions';
+import { useAppSelector } from '@services/hooks';
 
 export const IngredientDetails = () => {
 	const { id } = useParams();
-	const dispatch = useAppDispatch();
 	const {
 		items: ingredients,
 		loading,
 		error,
 	} = useAppSelector((state) => state.ingredients);
 	const ingredient = ingredients.find((item) => item._id === id);
-
-	useEffect(() => {
-		if (!ingredients.length && !loading) {
-			dispatch(fetchIngredients());
-		}
-	}, [dispatch, ingredients.length, loading]);
 
 	if (loading) {
 		return <p>Загрузка...</p>;
