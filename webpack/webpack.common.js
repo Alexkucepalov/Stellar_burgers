@@ -13,6 +13,7 @@ module.exports = {
 		filename: production
 			? 'static/scripts/[name].[contenthash].js'
 			: 'static/scripts/[name].js', // имя нашего бандла
+		publicPath: '/',
 	},
 	//Нужно помочь вебпаку научится работать с jsx и tsx файлами для этого используют ts loader
 	module: {
@@ -67,7 +68,7 @@ module.exports = {
 						loader: 'sass-loader',
 						options: {
 							sourceMap: true,
-							api: "modern"
+							api: 'modern',
 						},
 					},
 				],
@@ -81,7 +82,7 @@ module.exports = {
 			'@components': path.resolve(__dirname, '..', './src/components'),
 			'@services': path.resolve(__dirname, '..', './src/services'),
 			'@utils': path.resolve(__dirname, '..', './src/utils'),
-		}
+		},
 	},
 	plugins: [
 		new HTMLWebpackPlugins({
