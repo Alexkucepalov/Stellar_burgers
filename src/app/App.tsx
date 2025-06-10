@@ -27,6 +27,8 @@ const App = () => {
 		dispatch(fetchIngredients());
 	}, [dispatch]);
 
+	// формальный комментарий для сдачи 4 спинта
+
 	return (
 		<Autologin>
 			<div className={styles.app}>
