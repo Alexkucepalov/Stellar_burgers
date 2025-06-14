@@ -1,0 +1,225 @@
+.feedPage {
+  min-height: 100vh;
+  background: #131316;
+}
+
+.mainContentWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feedContainer {
+  display: flex;
+  gap: 60px; /* 15x4px */
+}
+
+.ordersList {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: transparent;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.orderCard {
+  background: #1C1C21;
+  border-radius: 40px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* 6x4px между элементами */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.orderCardLink {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ingredientsRow {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 8px;
+}
+
+.ingredientIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid #801AB2;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.innerIngredientIcon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1C1C21;
+  border-radius: 50%;
+}
+
+.ingredientIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholderIcon {
+  color: #8585ad;
+  font-size: 24px;
+}
+
+.orderFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 40px;
+}
+
+.statsPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.statsRow {
+  display: flex;
+  flex-direction: row;
+  gap: 36px;
+}
+
+.statsBlock {
+  padding: 24px;
+}
+
+.statusList {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8p
+}
+
+.statsNumber {
+  text-align: left;
+  background: #131316;
+  text-shadow: 0 0 10px #3333FF80, 0 0 20px #3333FF80, 0 0 30px #3333FF80;
+}
+
+.orderContentBelowName {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.overlayText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.orderFeedPageContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 40px;
+  box-sizing: border-box;
+}
+
+.textLeft {
+  align-self: flex-start;
+}
+
+.textCenter {
+  align-self: center;
+}
+
+.statusDone {
+  color: #00CC97;
+}
+
+.statusDefault {
+  color: #F2F2F3;
+}
+
+.ingredientsList {
+  display: flex;
+  flex-direction: column;
+  max-height: 312px;
+  overflow-y: auto;
+  padding-top: 24px;
+  padding-right: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ingredientItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.ingredientNameMargin {
+  margin-left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+.ingredientPriceBlock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.totalPrice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.orderSectionTitle {
+  text-align: left;
+  width: 100%;
+}
+
+.flexCenter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}

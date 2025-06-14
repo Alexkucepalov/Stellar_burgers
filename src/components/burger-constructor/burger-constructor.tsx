@@ -18,7 +18,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export const BurgerConstructor: React.FC = () => {
-	const { items = [], bun } = useAppSelector((state) => state.constructor);
+	const { items = [], bun } = useAppSelector((state) => state.burgerConstructor);
 	const { user } = useAppSelector((state) => state.auth); // Проверяем авторизацию
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const dispatch = useAppDispatch();
@@ -28,9 +28,24 @@ export const BurgerConstructor: React.FC = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const [disableButtonTemporarily, setDisableButtonTemporarily] = useState(false);
+
 	useEffect(() => {
 		console.log('Constructor state:', { items, bun });
 	}, [items, bun]);
+
+	useEffect(() => {
+		if (orderNumber) {
+			dispatch(clearConstructor());
+		}
+		if (error) {
+			setDisableButtonTemporarily(true);
+			const timer = setTimeout(() => {
+				setDisableButtonTemporarily(false);
+			}, 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [orderNumber, error, dispatch]);
 
 	// Подсчёт общей стоимости
 	const totalPrice = React.useMemo(() => {
@@ -65,13 +80,6 @@ export const BurgerConstructor: React.FC = () => {
 		dispatch(createOrder(orderIngredients));
 		setIsModalOpen(true);
 	};
-
-	// Очищаем конструктор при успешном создании заказа
-	useEffect(() => {
-		if (orderNumber) {
-			dispatch(clearConstructor());
-		}
-	}, [orderNumber, dispatch]);
 
 	return (
 		<div className={s.container}>
@@ -175,7 +183,7 @@ export const BurgerConstructor: React.FC = () => {
 					type='primary'
 					size='large'
 					onClick={handleCreateOrder}
-					disabled={loading || !bun || items.length === 0}>
+					disabled={loading || !bun || items.length === 0 || disableButtonTemporarily}>
 					{loading ? 'Оформляем заказ...' : 'Оформить заказ'}
 				</Button>
 			</div>

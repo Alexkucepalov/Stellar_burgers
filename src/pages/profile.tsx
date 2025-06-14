@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	EmailInput,
 	PasswordInput,
@@ -8,22 +8,18 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './profile.module.scss';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
-import { fetchUser, updateUser } from '@services/actions/authActions';
+import { logoutUser, updateUser } from '@services/actions/authActions';
 
 const Profile = () => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
+	const navigate = useNavigate();
 	const { user, loading, error } = useAppSelector((state) => state.auth);
 
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isFormChanged, setIsFormChanged] = useState(false);
-
-	// Получаем данные пользователя при монтировании компонента
-	useEffect(() => {
-		dispatch(fetchUser());
-	}, [dispatch]);
 
 	// Обновляем локальные состояния при изменении пользователя
 	useEffect(() => {
@@ -93,6 +89,17 @@ const Profile = () => {
 		}
 	};
 
+	// Обработчик выхода из системы
+	const handleLogout = async (e: React.MouseEvent) => {
+		e.preventDefault();
+		try {
+			await dispatch(logoutUser()).unwrap();
+			navigate('/login');
+		} catch (error) {
+			console.error('Ошибка при выходе из системы:', error);
+		}
+	};
+
 	// Отображение состояния загрузки или ошибки
 	if (loading) return <p>Загрузка...</p>;
 	if (error) return <p>Ошибка: {error}</p>;
@@ -115,13 +122,12 @@ const Profile = () => {
 						}`}>
 						История заказов
 					</Link>
-					<Link
-						to='/logout'
-						className={`text text_type_main-medium ${
-							location.pathname === '/logout' ? styles.active : ''
-						}`}>
+					<a
+						href='#'
+						onClick={handleLogout}
+						className={`text text_type_main-medium text_color_inactive`}>
 						Выход
-					</Link>
+					</a>
 					<div className={styles.profileContent + ' pt-20'}>
 						<p className='text text_type_main-default'>
 							В этом разделе вы можете изменить свои персональные данные

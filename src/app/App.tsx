@@ -16,6 +16,9 @@ import styles from './app.module.scss';
 import { Autologin } from '@components/autologin/autologin';
 import { useAppDispatch } from '@services/hooks';
 import { fetchIngredients } from '@services/actions/ingredientsActions';
+import Feed from '@pages/Feed';
+import OrderFeedPage from '@pages/OrderFeedPage';
+import OrderHistoryPage from '@pages/OrderHistoryPage';
 
 const App = () => {
 	const location = useLocation();
@@ -27,7 +30,9 @@ const App = () => {
 		dispatch(fetchIngredients());
 	}, [dispatch]);
 
-	// формальный комментарий для сдачи 4 спинта
+	console.log('App Location:', location);
+	console.log('App Background:', background);
+
 
 	return (
 		<Autologin>
@@ -37,6 +42,8 @@ const App = () => {
 				</header>
 				<Routes location={background || location}>
 					<Route path='/' element={<Home />} />
+					<Route path='/feed' element={<Feed />} />
+					<Route path='/feed/:number' element={<OrderFeedPage />} />
 					<Route
 						path='/login'
 						element={
@@ -78,6 +85,14 @@ const App = () => {
 							</ProtectedRouteElement>
 						}
 					/>
+					<Route
+						path='/profile/orders'
+						element={
+							<ProtectedRouteElement onlyForAuth>
+								<OrderHistoryPage />
+							</ProtectedRouteElement>
+						}
+					/>
 
 					<Route path='/ingredients/:id' element={<IngredientPage />} />
 				</Routes>
@@ -89,6 +104,22 @@ const App = () => {
 							element={
 								<Modal onClose={() => navigate(-1)}>
 									<IngredientDetails />
+								</Modal>
+							}
+						/>
+						<Route
+							path='/feed/:number'
+							element={
+								<Modal onClose={() => navigate(-1)}>
+									<OrderFeedPage />
+								</Modal>
+							}
+						/>
+						<Route
+							path='/profile/orders/:number'
+							element={
+								<Modal onClose={() => navigate(-1)}>
+									<OrderFeedPage />
 								</Modal>
 							}
 						/>

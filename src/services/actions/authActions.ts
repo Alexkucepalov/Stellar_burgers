@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import { request, refreshToken } from '@utils/api';
 
 // Регистрация пользователя
@@ -13,16 +13,24 @@ export const registerUser = createAsyncThunk(
 		{ rejectWithValue }
 	) => {
 		try {
+			// Очищаем токены перед попыткой регистрации, чтобы исключить их влияние на 403 ошибку
+			localStorage.removeItem('accessToken');
+			localStorage.removeItem('refreshToken');
+
 			const data = await request('auth/register', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password, name }),
 			});
 			localStorage.setItem('refreshToken', data.refreshToken);
-			localStorage.setItem('accessToken', data.accessToken);
+			const accessToken = data.accessToken.startsWith('Bearer ') ? data.accessToken.split(' ')[1] : data.accessToken;
+			localStorage.setItem('accessToken', accessToken);
 			return data;
-		} catch (err: any) {
-			return rejectWithValue(err.message);
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				return rejectWithValue(err.message);
+			}
+			return rejectWithValue('Неизвестная ошибка регистрации');
 		}
 	}
 );
@@ -41,10 +49,14 @@ export const loginUser = createAsyncThunk(
 				body: JSON.stringify({ email, password }),
 			});
 			localStorage.setItem('refreshToken', data.refreshToken);
-			localStorage.setItem('accessToken', data.accessToken);
+			const accessToken = data.accessToken.startsWith('Bearer ') ? data.accessToken.split(' ')[1] : data.accessToken;
+			localStorage.setItem('accessToken', accessToken);
 			return data;
-		} catch (err: any) {
-			return rejectWithValue(err.message);
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				return rejectWithValue(err.message);
+			}
+			return rejectWithValue('Неизвестная ошибка авторизации');
 		}
 	}
 );
@@ -64,8 +76,11 @@ export const logoutUser = createAsyncThunk(
 			localStorage.removeItem('refreshToken');
 			localStorage.removeItem('accessToken');
 			return data;
-		} catch (err: any) {
-			return rejectWithValue(err.message);
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				return rejectWithValue(err.message);
+			}
+			return rejectWithValue('Неизвестная ошибка выхода');
 		}
 	}
 );
@@ -81,23 +96,28 @@ export const fetchUser = createAsyncThunk(
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: accessToken,
+					'Authorization': `Bearer ${accessToken}`,
 				},
 			});
+			console.log('fetchUser fulfilled, user data:', data.user);
 			return data.user;
-		} catch (err: any) {
-			if (err.message === 'jwt expired') {
+		} catch (err: unknown) {
+			console.log('fetchUser rejected, error:', err);
+			if (err instanceof Error && err.message === 'jwt expired') {
+				console.log('JWT expired, attempting refresh token...');
 				const newAccessToken = await refreshToken();
+				console.log('New access token after refresh:', newAccessToken);
 				const data = await request('auth/user', {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
-						Authorization: newAccessToken,
+						'Authorization': `Bearer ${newAccessToken}`,
 					},
 				});
+				console.log('fetchUser fulfilled after refresh, user data:', data.user);
 				return data.user;
 			}
-			return rejectWithValue(err.message);
+			return rejectWithValue(err instanceof Error ? err.message : 'Неизвестная ошибка получения данных пользователя');
 		}
 	}
 );
@@ -116,25 +136,27 @@ export const updateUser = createAsyncThunk(
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: accessToken,
+					Authorization: `Bearer ${accessToken}`,
 				},
 				body: JSON.stringify({ email, name, ...(password && { password }) }),
 			});
 			return data.user;
-		} catch (err: any) {
-			if (err.message === 'jwt expired') {
+		} catch (err: unknown) {
+			if (err instanceof Error && err.message === 'jwt expired') {
 				const newAccessToken = await refreshToken();
 				const data = await request('auth/user', {
 					method: 'PATCH',
 					headers: {
 						'Content-Type': 'application/json',
-						Authorization: newAccessToken,
+						Authorization: `Bearer ${newAccessToken}`,
 					},
 					body: JSON.stringify({ email, name, ...(password && { password }) }),
 				});
 				return data.user;
 			}
-			return rejectWithValue(err.message);
+			return rejectWithValue(err instanceof Error ? err.message : 'Неизвестная ошибка обновления данных пользователя');
 		}
 	}
 );
+
+export const setAccessToken = createAction<string | null>('auth/setAccessToken');
