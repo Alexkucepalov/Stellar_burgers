@@ -93,6 +93,14 @@ const App = () => {
 							</ProtectedRouteElement>
 						}
 					/>
+					<Route
+						path='/profile/orders/:number'
+						element={
+							<ProtectedRouteElement onlyForAuth>
+								<OrderFeedPage />
+							</ProtectedRouteElement>
+						}
+					/>
 
 					<Route path='/ingredients/:id' element={<IngredientPage />} />
 				</Routes>
@@ -118,9 +126,11 @@ const App = () => {
 						<Route
 							path='/profile/orders/:number'
 							element={
-								<Modal onClose={() => navigate(-1)}>
-									<OrderFeedPage />
-								</Modal>
+								<ProtectedRouteElement onlyForAuth>
+									<Modal onClose={() => navigate(-1)}>
+										<OrderFeedPage />
+									</Modal>
+								</ProtectedRouteElement>
 							}
 						/>
 					</Routes>

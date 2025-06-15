@@ -23,11 +23,26 @@ const ProtectedRouteElement: React.FC<ProtectedRouteElementProps> = ({
 
 	// Если маршрут доступен только для авторизованных пользователей
 	if (onlyForAuth && !user) {
+		// Сохраняем текущий путь и состояние фона
+		localStorage.setItem('redirectPath', location.pathname);
+		if (location.state?.background) {
+			localStorage.setItem('redirectBackground', JSON.stringify(location.state.background));
+		}
 		return <Navigate to='/login' state={{ from: location }} />;
 	}
 
 	// Если маршрут доступен только для неавторизованных пользователей
 	if (onlyForUnauth && user) {
+		// Проверяем, есть ли сохраненный путь для перенаправления
+		const savedPath = localStorage.getItem('redirectPath');
+		const savedBackground = localStorage.getItem('redirectBackground');
+		
+		if (savedPath) {
+			const background = savedBackground ? JSON.parse(savedBackground) : undefined;
+			localStorage.removeItem('redirectPath');
+			localStorage.removeItem('redirectBackground');
+			return <Navigate to={savedPath} state={{ background }} />;
+		}
 		return <Navigate to='/profile' />;
 	}
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import styles from './feed.module.scss';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useAppSelector } from '@services/hooks';
@@ -19,12 +19,41 @@ interface IOrderDetails {
 const OrderFeedPage: React.FC = () => {
   const { number } = useParams<{ number: string }>();
   const location = useLocation();
+  const navigate = useNavigate();
   const { items: allIngredients } = useAppSelector((state: RootState) => state.ingredients);
   const { orders: publicOrders } = useAppSelector((state: RootState) => state.ws);
   const { orders: userOrders } = useAppSelector((state: RootState) => state.wsAuth);
   const [order, setOrder] = useState<IOrderDetails | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Сохраняем состояние при перезагрузке
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (number) {
+        localStorage.setItem('lastOrderNumber', number);
+        if (location.state?.background) {
+          localStorage.setItem('lastOrderBackground', JSON.stringify(location.state.background));
+        }
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [number, location.state]);
+
+  // Восстанавливаем состояние при загрузке
+  useEffect(() => {
+    const lastNumber = localStorage.getItem('lastOrderNumber');
+    const lastBackground = localStorage.getItem('lastOrderBackground');
+    
+    if (lastNumber && lastNumber !== number) {
+      const background = lastBackground ? JSON.parse(lastBackground) : undefined;
+      navigate(`/profile/orders/${lastNumber}`, { state: background });
+    }
+  }, [navigate, number]);
 
   useEffect(() => {
     const fetchOrder = async () => {

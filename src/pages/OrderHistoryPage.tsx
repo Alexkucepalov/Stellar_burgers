@@ -4,7 +4,7 @@ import { FormattedDate } from '@ya.praktikum/react-developer-burger-ui-component
 import styles from './feed.module.scss';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import { RootState } from '../services/store';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { WS_AUTH_CONNECTION_START, WS_AUTH_CONNECTION_CLOSED } from '@services/actions/wsActions';
 import { IOrder, Ingredient } from '../utils/types';
 
@@ -14,6 +14,7 @@ const OrderHistoryPage: React.FC = () => {
   const { orders, wsConnected, error } = useAppSelector((state: RootState) => state.wsAuth);
   const { accessToken, loading: authLoading } = useAppSelector((state: RootState) => state.auth);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (accessToken && !authLoading) {
@@ -23,6 +24,32 @@ const OrderHistoryPage: React.FC = () => {
       dispatch(WS_AUTH_CONNECTION_CLOSED());
     };
   }, [dispatch, accessToken, authLoading]);
+
+  // Добавляем эффект для восстановления соединения при перезагрузке страницы
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.setItem('lastOrderHistoryPath', location.pathname);
+      if (location.state?.background) {
+        localStorage.setItem('lastOrderHistoryBackground', JSON.stringify(location.state.background));
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [location.pathname, location.state]);
+
+  // Восстанавливаем путь и состояние при загрузке страницы
+  useEffect(() => {
+    const lastPath = localStorage.getItem('lastOrderHistoryPath');
+    const lastBackground = localStorage.getItem('lastOrderHistoryBackground');
+    
+    if (lastPath && lastPath !== location.pathname) {
+      const background = lastBackground ? JSON.parse(lastBackground) : undefined;
+      navigate(lastPath, { state: background });
+    }
+  }, [navigate, location.pathname]);
 
   const getStatusText = (status: string) => {
     switch (status) {

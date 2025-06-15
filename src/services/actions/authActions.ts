@@ -75,6 +75,12 @@ export const logoutUser = createAsyncThunk(
 			});
 			localStorage.removeItem('refreshToken');
 			localStorage.removeItem('accessToken');
+			localStorage.removeItem('lastOrderHistoryPath');
+			localStorage.removeItem('lastOrderHistoryBackground');
+			localStorage.removeItem('lastOrderNumber');
+			localStorage.removeItem('lastOrderBackground');
+			localStorage.removeItem('redirectPath');
+			localStorage.removeItem('redirectBackground');
 			return data;
 		} catch (err: unknown) {
 			if (err instanceof Error) {
