@@ -130,7 +130,8 @@ export const BurgerIngredients: React.FC = () => {
 												{...provided.draggableProps}
 												{...provided.dragHandleProps}
 												className={s.ingredient}
-												onClick={() => handleIngredientClick(ingredient)}>
+												onClick={() => handleIngredientClick(ingredient)}
+												data-testid="ingredient-item">
 												<img
 													src={ingredient.image}
 													alt={ingredient.name}
@@ -169,7 +170,8 @@ export const BurgerIngredients: React.FC = () => {
 												{...provided.draggableProps}
 												{...provided.dragHandleProps}
 												className={s.ingredient}
-												onClick={() => handleIngredientClick(ingredient)}>
+												onClick={() => handleIngredientClick(ingredient)}
+												data-testid="ingredient-item">
 												<img
 													src={ingredient.image}
 													alt={ingredient.name}
@@ -208,7 +210,8 @@ export const BurgerIngredients: React.FC = () => {
 												{...provided.draggableProps}
 												{...provided.dragHandleProps}
 												className={s.ingredient}
-												onClick={() => handleIngredientClick(ingredient)}>
+												onClick={() => handleIngredientClick(ingredient)}
+												data-testid="ingredient-item">
 												<img
 													src={ingredient.image}
 													alt={ingredient.name}

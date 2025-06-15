@@ -6,7 +6,7 @@ interface ConstructorState {
 	bun: (Ingredient & { uniqueId: string }) | null;
 }
 
-const initialState: ConstructorState = {
+export const initialState: ConstructorState = {
 	items: [],
 	bun: null,
 };

@@ -15,3 +15,7 @@ root.render(
 		</BrowserRouter>
 	</Provider>
 );
+
+if ((window as any).Cypress) {
+	(window as any).store = store;
+}
