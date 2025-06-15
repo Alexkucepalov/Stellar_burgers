@@ -10,23 +10,36 @@ const checkResponse = (res: Response) => {
 
 // Универсальная функция запроса
 export const request = (endpoint: string, options?: RequestInit) => {
-	return fetch(`${BASE_URL}${endpoint}`, options).then(checkResponse);
+	console.log(`Отправка запроса: ${BASE_URL}${endpoint}`);
+	console.log('Метод:', options?.method);
+	console.log('Заголовки:', options?.headers);
+	console.log('Тело запроса:', options?.body);
+	return fetch(`${BASE_URL}${endpoint}`, { ...options }).then(checkResponse);
 };
 
 // Функция для обновления токена
 export const refreshToken = async () => {
 	const refreshToken = localStorage.getItem('refreshToken');
 	if (!refreshToken) {
+		console.error('refreshToken: Refresh token отсутствует в localStorage');
 		throw new Error('Refresh token отсутствует');
 	}
-	const data = await request('auth/token', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ token: refreshToken }),
-	});
-	localStorage.setItem('refreshToken', data.refreshToken);
-	localStorage.setItem('accessToken', data.accessToken);
-	return data.accessToken;
+	console.log('refreshToken: Отправка запроса на обновление токена с refreshToken:', refreshToken);
+	try {
+		const data = await request('auth/token', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ token: refreshToken }),
+		});
+		localStorage.setItem('refreshToken', data.refreshToken);
+		const newAccessToken = data.accessToken.startsWith('Bearer ') ? data.accessToken.split(' ')[1] : data.accessToken;
+		localStorage.setItem('accessToken', newAccessToken);
+		console.log('refreshToken: Токен успешно обновлен. Новый accessToken:', newAccessToken);
+		return newAccessToken;
+	} catch (err) {
+		console.error('refreshToken: Ошибка при запросе на обновление токена:', err);
+		throw err;
+	}
 };
 
 // Функция для регистрации пользователя
@@ -88,7 +101,7 @@ export const getUser = async (accessToken: string) => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: accessToken,
+			Authorization: `Bearer ${accessToken}`,
 		},
 	});
 };
@@ -102,7 +115,7 @@ export const updateUser = async (
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: accessToken,
+			Authorization: `Bearer ${accessToken}`,
 		},
 		body: JSON.stringify(userData),
 	});

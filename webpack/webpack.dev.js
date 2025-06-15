@@ -11,6 +11,16 @@ module.exports = {
 		port: 3000, // порт, чтобы открывать сайт по адресу localhost:8080, но можно поменять порт
 		open: true, // сайт будет открываться сам при запуске npm run dev
 		hot: true,
+		proxy: {
+			'/api': {
+				target: 'https://norma.nomoreparties.space',
+				secure: false,
+				changeOrigin: true,
+				pathRewrite: {
+					'^/api': '/api'
+				}
+			}
+		}
 	},
 	plugins: [new ReactRefreshWebpackPlugin()],
 };

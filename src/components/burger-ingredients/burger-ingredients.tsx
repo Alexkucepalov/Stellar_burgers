@@ -14,7 +14,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 export const BurgerIngredients: React.FC = () => {
 	const ingredients = useAppSelector((state) => state.ingredients.items);
-	const { items, bun } = useAppSelector((state) => state.constructor);
+	const { items, bun } = useAppSelector((state) => state.burgerConstructor);
 
 	const [current, setCurrent] = React.useState('one');
 
