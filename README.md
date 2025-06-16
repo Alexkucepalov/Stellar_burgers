@@ -118,9 +118,7 @@ npm run cypress
 - Все редьюсеры покрыты unit-тестами.
 ---
 
-## Контакты
-
-- Ссылка на проект: [Stellar-burgers]([https://github.com/Alexkucepalov](https://alexkucepalov.github.io/Stellar_burgers))
+- Ссылка на проект: ([Stellar-burgers](https://alexkucepalov.github.io/Stellar_burgers))
 
 ## Контакты
 
