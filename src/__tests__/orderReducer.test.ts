@@ -1,6 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
-import orderReducer, { initialState } from '../services/reducers/orderReducer';
-import { createOrder, clearOrder } from '../services/reducers/orderReducer';
+import orderReducer, { initialState, clearOrder } from '../services/reducers/orderReducer';
+import { createOrder } from '../services/actions/orderActions';
 
 describe('order reducer', () => {
     // Тест начального состояния

@@ -113,7 +113,6 @@ export const BurgerConstructor: React.FC = () => {
 							data-testid="constructor-drop-area">
 							{items.length > 0 ? (
 								items.map((item, index) => {
-									console.log('Rendering item:', item);
 									return (
 										<Draggable
 											key={item.uniqueId}

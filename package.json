@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"homepage": "./",
 	"devDependencies": {
+		"@4tw/cypress-drag-drop": "^2.3.0",
 		"@babel/preset-env": "^7.26.8",
 		"@babel/preset-react": "^7.26.3",
 		"@babel/preset-typescript": "^7.26.0",
