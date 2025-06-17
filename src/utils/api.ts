@@ -1,44 +1,63 @@
-export const BASE_URL = 'https://norma.nomoreparties.space/api/';
+const BASE_URL = 'https://norma.nomoreparties.space/api';
 
-// Проверка ответа на `ok`
-const checkResponse = (res: Response) => {
-	if (res.ok) {
-		return res.json();
+interface RequestOptions extends RequestInit {
+	headers?: HeadersInit;
+}
+
+export const request = async (endpoint: string, options: RequestOptions = {}) => {
+	const url = `${BASE_URL}/${endpoint}`;
+	const headers = {
+		'Content-Type': 'application/json',
+		...(options.headers || {}),
+	};
+
+	console.log('Отправка запроса:', url);
+	console.log('Метод:', options.method);
+	console.log('Заголовки:', headers);
+	console.log('Тело запроса:', options.body);
+
+	const response = await fetch(url, {
+		...options,
+		headers,
+	});
+
+	if (!response.ok) {
+		const error = await response.json().catch(() => ({ message: 'Ошибка сети' }));
+		throw new Error(error.message || `Ошибка ${response.status}`);
 	}
-	return Promise.reject(`Ошибка ${res.status}`);
+
+	return response.json();
 };
 
-// Универсальная функция запроса
-export const request = (endpoint: string, options?: RequestInit) => {
-	console.log(`Отправка запроса: ${BASE_URL}${endpoint}`);
-	console.log('Метод:', options?.method);
-	console.log('Заголовки:', options?.headers);
-	console.log('Тело запроса:', options?.body);
-	return fetch(`${BASE_URL}${endpoint}`, { ...options }).then(checkResponse);
-};
-
-// Функция для обновления токена
-export const refreshToken = async () => {
-	const refreshToken = localStorage.getItem('refreshToken');
-	if (!refreshToken) {
-		console.error('refreshToken: Refresh token отсутствует в localStorage');
-		throw new Error('Refresh token отсутствует');
-	}
-	console.log('refreshToken: Отправка запроса на обновление токена с refreshToken:', refreshToken);
+export const refreshToken = async (): Promise<string> => {
 	try {
-		const data = await request('auth/token', {
+		const refreshToken = localStorage.getItem('refreshToken');
+		if (!refreshToken) {
+			throw new Error('No refresh token found');
+		}
+
+		const response = await fetch(`${BASE_URL}/auth/token`, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: {
+				'Content-Type': 'application/json',
+			},
 			body: JSON.stringify({ token: refreshToken }),
 		});
+
+		if (!response.ok) {
+			throw new Error('Failed to refresh token');
+		}
+
+		const data = await response.json();
+		const accessToken = data.accessToken.startsWith('Bearer ') ? data.accessToken.split(' ')[1] : data.accessToken;
+		localStorage.setItem('accessToken', accessToken);
 		localStorage.setItem('refreshToken', data.refreshToken);
-		const newAccessToken = data.accessToken.startsWith('Bearer ') ? data.accessToken.split(' ')[1] : data.accessToken;
-		localStorage.setItem('accessToken', newAccessToken);
-		console.log('refreshToken: Токен успешно обновлен. Новый accessToken:', newAccessToken);
-		return newAccessToken;
-	} catch (err) {
-		console.error('refreshToken: Ошибка при запросе на обновление токена:', err);
-		throw err;
+		return accessToken;
+	} catch (error) {
+		console.error('Error refreshing token:', error);
+		localStorage.removeItem('accessToken');
+		localStorage.removeItem('refreshToken');
+		throw error;
 	}
 };
 

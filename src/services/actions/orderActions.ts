@@ -14,7 +14,8 @@ export const createOrder = createAsyncThunk(
 			};
 
 			if (accessToken) {
-				headers['Authorization'] = `Bearer ${accessToken}`;
+				const token = accessToken.startsWith('Bearer ') ? accessToken.split(' ')[1] : accessToken;
+				headers['Authorization'] = `Bearer ${token}`;
 			}
 
 			const data = await request('orders', {
