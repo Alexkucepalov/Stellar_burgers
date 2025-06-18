@@ -98,31 +98,37 @@ export const fetchUser = createAsyncThunk(
 		try {
 			const accessToken = localStorage.getItem('accessToken');
 			if (!accessToken) throw new Error('Access token отсутствует');
-			const data = await request('auth/user', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${accessToken}`,
-				},
-			});
-			console.log('fetchUser fulfilled, user data:', data.user);
-			return data.user;
-		} catch (err: unknown) {
-			console.log('fetchUser rejected, error:', err);
-			if (err instanceof Error && err.message === 'jwt expired') {
-				console.log('JWT expired, attempting refresh token...');
-				const newAccessToken = await refreshToken();
-				console.log('New access token after refresh:', newAccessToken);
+			
+			try {
 				const data = await request('auth/user', {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${newAccessToken}`,
+						'Authorization': `Bearer ${accessToken}`,
 					},
 				});
-				console.log('fetchUser fulfilled after refresh, user data:', data.user);
+				console.log('fetchUser fulfilled, user data:', data.user);
 				return data.user;
+			} catch (err) {
+				if (err instanceof Error && err.message === 'jwt expired') {
+					console.log('JWT expired, attempting refresh token...');
+					const newAccessToken = await refreshToken();
+					console.log('New access token after refresh:', newAccessToken);
+					
+					const data = await request('auth/user', {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${newAccessToken}`,
+						},
+					});
+					console.log('fetchUser fulfilled after refresh, user data:', data.user);
+					return data.user;
+				}
+				throw err;
 			}
+		} catch (err: unknown) {
+			console.log('fetchUser rejected, error:', err);
 			return rejectWithValue(err instanceof Error ? err.message : 'Неизвестная ошибка получения данных пользователя');
 		}
 	}
@@ -138,28 +144,33 @@ export const updateUser = createAsyncThunk(
 		try {
 			const accessToken = localStorage.getItem('accessToken');
 			if (!accessToken) throw new Error('Access token отсутствует');
-			const data = await request('auth/user', {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${accessToken}`,
-				},
-				body: JSON.stringify({ email, name, ...(password && { password }) }),
-			});
-			return data.user;
-		} catch (err: unknown) {
-			if (err instanceof Error && err.message === 'jwt expired') {
-				const newAccessToken = await refreshToken();
+			
+			try {
 				const data = await request('auth/user', {
 					method: 'PATCH',
 					headers: {
 						'Content-Type': 'application/json',
-						Authorization: `Bearer ${newAccessToken}`,
+						Authorization: `Bearer ${accessToken}`,
 					},
 					body: JSON.stringify({ email, name, ...(password && { password }) }),
 				});
 				return data.user;
+			} catch (err) {
+				if (err instanceof Error && err.message === 'jwt expired') {
+					const newAccessToken = await refreshToken();
+					const data = await request('auth/user', {
+						method: 'PATCH',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: `Bearer ${newAccessToken}`,
+						},
+						body: JSON.stringify({ email, name, ...(password && { password }) }),
+					});
+					return data.user;
+				}
+				throw err;
 			}
+		} catch (err: unknown) {
 			return rejectWithValue(err instanceof Error ? err.message : 'Неизвестная ошибка обновления данных пользователя');
 		}
 	}

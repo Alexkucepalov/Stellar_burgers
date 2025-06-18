@@ -16,7 +16,7 @@ interface IWsAuthState {
   error: string | undefined;
 }
 
-const initialState: IWsAuthState = {
+export const initialState: IWsAuthState = {
   wsConnected: false,
   orders: [],
   total: null,

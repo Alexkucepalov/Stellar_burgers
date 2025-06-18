@@ -25,7 +25,7 @@ export const IngredientDetails = () => {
 	}
 
 	return (
-		<div className={s.container}>
+		<div className={s.container} data-testid="ingredient-details">
 			<h2 className='text text_type_main-large'>Детали ингредиента</h2>
 			<img src={ingredient?.image} alt={ingredient?.name} className={s.image} />
 			<p className='text text_type_main-medium mt-4 mb-8'>{ingredient?.name}</p>

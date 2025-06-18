@@ -84,7 +84,7 @@ export const BurgerConstructor: React.FC = () => {
 	return (
 		<div className={s.container}>
 			{/* Верхняя булка */}
-			<div className={`${s.bunContainer} pb-4`}>
+			<div className={`${s.bunContainer} pb-4`} data-testid="constructor-bun">
 				{bun ? (
 					<ConstructorElement
 						type='top'
@@ -109,10 +109,10 @@ export const BurgerConstructor: React.FC = () => {
 						<div
 							className={s.ingredientList}
 							ref={provided.innerRef}
-							{...provided.droppableProps}>
+							{...provided.droppableProps}
+							data-testid="constructor-drop-area">
 							{items.length > 0 ? (
 								items.map((item, index) => {
-									console.log('Rendering item:', item);
 									return (
 										<Draggable
 											key={item.uniqueId}
@@ -123,7 +123,8 @@ export const BurgerConstructor: React.FC = () => {
 													ref={provided.innerRef}
 													{...provided.draggableProps}
 													{...provided.dragHandleProps}
-													className={`${s.ingredient} pt-2 pb-2`}>
+													className={`${s.ingredient} pt-2 pb-2`}
+													data-testid="constructor-filling">
 													<div className={s.dragIconContainer}>
 														<DragIcon type='primary' />
 													</div>
@@ -154,7 +155,7 @@ export const BurgerConstructor: React.FC = () => {
 			</div>
 
 			{/* Нижняя булка */}
-			<div className={`${s.bunContainer} pt-4`}>
+			<div className={`${s.bunContainer} pt-4`} data-testid="constructor-bun">
 				{bun ? (
 					<ConstructorElement
 						type='bottom'
@@ -174,7 +175,7 @@ export const BurgerConstructor: React.FC = () => {
 
 			{/* Итоговая стоимость и кнопка заказа */}
 			<div className={`${s.buttonContainer} pt-4`}>
-				<div className={s.total}>
+				<div className={s.total} data-testid="total-price">
 					<span className='text text_type_digits-medium'>{totalPrice}</span>
 					<CurrencyIcon type='primary' />
 				</div>
@@ -183,14 +184,15 @@ export const BurgerConstructor: React.FC = () => {
 					type='primary'
 					size='large'
 					onClick={handleCreateOrder}
-					disabled={loading || !bun || items.length === 0 || disableButtonTemporarily}>
+					disabled={loading || !bun || items.length === 0 || disableButtonTemporarily}
+					data-testid="order-button">
 					{loading ? 'Оформляем заказ...' : 'Оформить заказ'}
 				</Button>
 			</div>
 
 			{/* Модальное окно с деталями заказа */}
 			{isModalOpen && (
-				<Modal onClose={() => setIsModalOpen(false)}>
+				<Modal onClose={() => setIsModalOpen(false)} data-testid="modal">
 					<OrderDetails orderNumber={orderNumber?.toString()} />
 				</Modal>
 			)}
